@@ -1,0 +1,4 @@
+rootProject.name = 'Nota-Toolkit'
+
+include ':io-encodehelper',
+        ':io-filej'
