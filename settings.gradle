@@ -2,3 +2,8 @@ rootProject.name = 'Nota-Toolkit'
 
 include ':io-encodehelper',
         ':io-filej'
+
+rootProject.children.each {
+    /**设置构建脚本文件名*/
+    it.buildFileName = "nt-"+it.name + '.gradle'
+}
