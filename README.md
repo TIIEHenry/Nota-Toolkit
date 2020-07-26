@@ -1,2 +1,2 @@
 # Android-Nota-Toolkit
- efficent development with kotlin
+ effective developing with kotlin
