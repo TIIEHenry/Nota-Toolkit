@@ -49,6 +49,93 @@ public class Filej extends File {
         this(f.getPath());
     }
 
+    public static void deleteDir(File dir) {
+        for (File file : dir.listFiles()) {
+            if (file.isFile()) {
+                file.delete();
+                // 删除所有文件
+            } else if (file.isDirectory()) {
+                deleteDir(file);
+                // 递规的方式删除文件夹
+            }
+        }
+        dir.delete();
+        // 删除目录本身
+    }
+
+    public static void copyStream(InputStream i, OutputStream o) throws IOException {
+        copyStream(i, o, DEF_BYTESIZE);
+    }
+
+    public static void copyStream(InputStream i, OutputStream o, int byteSize) throws IOException {
+        byte[] buffer = new byte[byteSize];
+        copyStream(i, o, buffer);
+    }
+
+    public static void copyStream(InputStream i, OutputStream o, byte[] buffer) throws IOException {
+        int s;
+        while ((s = i.read(buffer)) != -1) {
+            o.write(buffer, 0, s);
+        }
+    }
+
+    /**
+     * 默认编码UTF8
+     */
+    public static String readStreamString(InputStream i) throws IOException {
+        return readStreamString(i, DEF_ENCODING);
+    }
+
+    /**
+     * @param encoding 编码格式默认UTF-8
+     */
+    public static String readStreamString(InputStream i, String encoding) throws IOException {
+        BufferedReader bufferedReader = null;
+        StringBuilder sb = new StringBuilder();
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(i, encoding));
+            String lineTxt;
+            while ((lineTxt = bufferedReader.readLine()) != null) {
+                sb.append(lineTxt);
+                sb.append("\n");
+            }
+        } finally {
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+        }
+        return sb.toString();
+    }
+
+    public static byte[] readStreamBytes(FileInputStream in) throws IOException {
+        byte[] buffer;
+        try {
+            int length = in.available();
+            buffer = new byte[length];
+            in.read(buffer);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+        return buffer;
+    }
+
+    public static String getFormatedSize(long size) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String sizeizeString = "0K";
+        if (size < 1000) {
+            sizeizeString = df.format((double) size) + "B";
+        } else if (size < 1024000) {
+            sizeizeString = df.format((double) size / 1024) + "K";
+        } else if (size < 1048576000) {
+            sizeizeString = df.format((double) size / 1048576) + "M";
+        } else {
+            sizeizeString = df.format((double) size / 1073741824) + "G";
+        }
+        return sizeizeString;
+    }
+
     public Filej parent(int level) {
         File f = this;
         for (int i = 0; i < level; i++) {
@@ -77,7 +164,6 @@ public class Filej extends File {
         return getPath();
     }
 
-
     public boolean deleteAll() {
         if (isDirectory()) {
             deleteDir(this);
@@ -85,20 +171,6 @@ public class Filej extends File {
             return delete();
         }
         return !exists();
-    }
-
-    public static void deleteDir(File dir) {
-        for (File file : dir.listFiles()) {
-            if (file.isFile()) {
-                file.delete();
-                // 删除所有文件
-            } else if (file.isDirectory()) {
-                deleteDir(file);
-                // 递规的方式删除文件夹
-            }
-        }
-        dir.delete();
-        // 删除目录本身
     }
 
     public boolean copyTo(String path) throws IOException {
@@ -144,23 +216,6 @@ public class Filej extends File {
         return true;
     }
 
-    public static void copyStream(InputStream i, OutputStream o) throws IOException {
-        copyStream(i, o, DEF_BYTESIZE);
-    }
-
-    public static void copyStream(InputStream i, OutputStream o, int byteSize) throws IOException {
-        byte[] buffer = new byte[byteSize];
-        copyStream(i, o, buffer);
-    }
-
-    public static void copyStream(InputStream i, OutputStream o, byte[] buffer) throws IOException {
-        int s;
-        while ((s = i.read(buffer)) != -1) {
-            o.write(buffer, 0, s);
-        }
-    }
-
-
     public String readString() throws IOException {
         return readString(DEF_ENCODING);
     }
@@ -186,49 +241,6 @@ public class Filej extends File {
         return true;
     }
 
-    /**
-     * 默认编码UTF8
-     */
-    public static String readStreamString(InputStream i) throws IOException {
-        return readStreamString(i, DEF_ENCODING);
-    }
-
-    /**
-     * @param encoding 编码格式默认UTF-8
-     */
-    public static String readStreamString(InputStream i, String encoding) throws IOException {
-
-        BufferedReader bufferedReader = null;
-        StringBuffer sb = sb = new StringBuffer();
-        try {
-            bufferedReader = new BufferedReader(new InputStreamReader(i, encoding));
-            String lineTxt = null;
-            while ((lineTxt = bufferedReader.readLine()) != null) {
-                sb.append(lineTxt);
-            }
-        } finally {
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
-        }
-        return sb.toString();
-    }
-
-    public static byte[] readStreamBytes(FileInputStream in) throws IOException {
-        byte[] buffer = null;
-        try {
-            int length = in.available();
-            buffer = new byte[length];
-            in.read(buffer);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-        }
-        return buffer;
-    }
-
-
     public FileInputStream getInputStream() throws FileNotFoundException {
         return new FileInputStream(this);
     }
@@ -236,7 +248,6 @@ public class Filej extends File {
     public FileOutputStream getOutputStream() throws FileNotFoundException {
         return new FileOutputStream(this);
     }
-
 
     /**
      * 获取文件树
@@ -281,27 +292,11 @@ public class Filej extends File {
         return 0;
     }
 
-
     /**
      * @return 2.1M
      */
     public String getFormatedSize() {
         return getFormatedSize(length());
-    }
-
-    public static String getFormatedSize(long size) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        String sizeizeString = "0K";
-        if (size < 1000) {
-            sizeizeString = df.format((double) size) + "B";
-        } else if (size < 1024000) {
-            sizeizeString = df.format((double) size / 1024) + "K";
-        } else if (size < 1048576000) {
-            sizeizeString = df.format((double) size / 1048576) + "M";
-        } else {
-            sizeizeString = df.format((double) size / 1073741824) + "G";
-        }
-        return sizeizeString;
     }
 
 }
