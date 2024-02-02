@@ -232,7 +232,7 @@ public class CharsetMatch implements Comparable<CharsetMatch> {
     //
     //   Private Data
     //
-    private int                 fConfidence;
+    private final int                 fConfidence;
     private byte[]              fRawInput = null;     // Original, untouched input bytes.
                                                       //  If user gave us a byte array, this is it.
     private int                 fRawLength;           // Length of data in fRawInput array.
@@ -240,8 +240,8 @@ public class CharsetMatch implements Comparable<CharsetMatch> {
     private InputStream         fInputStream = null;  // User's input stream, or null if the user
                                                       //   gave us a byte array.
 
-    private String              fCharsetName;         // The name of the charset this CharsetMatch
+    private final String              fCharsetName;         // The name of the charset this CharsetMatch
                                                       //   represents.  Filled in by the recognizer.
-    private String              fLang;                // The language, if one was determined by
+    private final String              fLang;                // The language, if one was determined by
                                                       //   the recognizer during the detect operation.
 }

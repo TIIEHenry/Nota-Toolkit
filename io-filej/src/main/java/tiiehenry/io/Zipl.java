@@ -28,7 +28,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class Zipl {
 
-    private File zipFile;
+    //    解压源文件，压缩目标文件
+    private final File zipFile;
     //4M
     private byte[] buffer = new byte[4096 * 1024];
     private int level = Deflater.DEFAULT_COMPRESSION;
@@ -72,15 +73,15 @@ public class Zipl {
         return this;
     }
 
-    public void zipDir(File dir, File zipFile) throws IOException {
-        zip(new Filej(dir).getDirMap(), zipFile);
+    public void zipDir(File dir) throws IOException {
+        zip(new Filej(dir).getDirMap());
     }
 
-    public void zip(ArrayMap<String, File> files, File zipFile) throws IOException {
+    public void zip(ArrayMap<String, File> files) throws IOException {
         if (zipFile.exists()) {
             IOExceptionMaker.exists(zipFile);
         }
-        if (!zipFile.getParentFile().mkdirs()) {
+        if (!zipFile.getParentFile().exists()&&!zipFile.getParentFile().mkdirs()) {
             IOExceptionMaker.mkdir(zipFile.getParent());
         }
 
@@ -96,7 +97,9 @@ public class Zipl {
             Map.Entry entry = (Map.Entry) o;
             String name = (String) entry.getKey();
             File file = (File) entry.getValue();
-            addEntry(out, name, file);
+            if (file.isFile()) {
+                addEntry(out, name, file);
+            }
         }
         out.closeEntry();
         out.close();

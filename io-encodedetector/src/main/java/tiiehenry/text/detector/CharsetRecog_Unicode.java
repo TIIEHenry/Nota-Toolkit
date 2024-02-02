@@ -182,7 +182,7 @@ abstract class CharsetRecog_Unicode extends CharsetRecognizer {
         @Override
         int getChar(byte[] input, int index)
         {
-            return (input[index + 0] & 0xFF) << 24 | (input[index + 1] & 0xFF) << 16 |
+            return (input[index] & 0xFF) << 24 | (input[index + 1] & 0xFF) << 16 |
                    (input[index + 2] & 0xFF) <<  8 | (input[index + 3] & 0xFF);
         }
 
@@ -200,7 +200,7 @@ abstract class CharsetRecog_Unicode extends CharsetRecognizer {
         int getChar(byte[] input, int index)
         {
             return (input[index + 3] & 0xFF) << 24 | (input[index + 2] & 0xFF) << 16 |
-                   (input[index + 1] & 0xFF) <<  8 | (input[index + 0] & 0xFF);
+                   (input[index + 1] & 0xFF) <<  8 | (input[index] & 0xFF);
         }
 
         @Override

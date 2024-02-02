@@ -49,7 +49,10 @@ public class Filej extends File {
         this(f.getPath());
     }
 
-    public static void deleteDir(File dir) {
+    public static void clearDir(File dir) {
+        if (!dir.isDirectory()) {
+            return;
+        }
         for (File file : dir.listFiles()) {
             if (file.isFile()) {
                 file.delete();
@@ -59,6 +62,13 @@ public class Filej extends File {
                 // 递规的方式删除文件夹
             }
         }
+    }
+
+    public static void deleteDir(File dir) {
+        if (!dir.isDirectory()) {
+            return;
+        }
+        clearDir(dir);
         dir.delete();
         // 删除目录本身
     }

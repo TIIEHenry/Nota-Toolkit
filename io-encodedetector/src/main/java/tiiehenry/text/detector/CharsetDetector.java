@@ -159,7 +159,7 @@ public class CharsetDetector {
 //          detectAll(), and cut it short as soon as a match with a high confidence
 //          is found.  This is something to be done later, after things are otherwise
 //          working.
-        CharsetMatch matches[] = detectAll();
+        CharsetMatch[] matches = detectAll();
         
         if (matches == null || matches.length == 0) {
             return null;
@@ -430,7 +430,7 @@ public class CharsetDetector {
     
     int         fInputLen;          // Length of the byte data in fInputBytes.
     
-    short       fByteStats[] =      // byte frequency statistics for the input text.
+    short[] fByteStats =      // byte frequency statistics for the input text.
                    new short[256];  //   Value is percent, not absolute.
                                     //   Value is rounded up, so zero really means zero occurences.
     
