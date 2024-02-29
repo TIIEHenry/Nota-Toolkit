@@ -15,7 +15,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -265,22 +267,29 @@ public class Filej extends File {
      * @return (" music / ", File) ("music/a.mp3",File)
      */
     public ArrayMap<String, File> getDirMap() {
+        return getDirMap(new ArrayList<>(), "");
+    }
+
+    public ArrayMap<String, File> getDirMap(List<String> excludeDirs, String namePrefix) {
         if (!isDirectory()) {
             return null;
         }
         ArrayMap<String, File> size = new ArrayMap<>();
-        addFileToMap(size, "", this);
+        addFileToMap(size, excludeDirs, namePrefix, this);
         return size;
     }
 
-    private void addFileToMap(ArrayMap<String, File> size, String namePerfix, File dir) {
+    private void addFileToMap(ArrayMap<String, File> size, List<String> excludeDirs, String namePerfix, File dir) {
         for (File f : dir.listFiles()) {
             String fname = f.getName();
+            if (excludeDirs.contains(fname)) {
+                continue;
+            }
             if (f.isFile()) {
                 size.put(namePerfix + fname, f);
             } else if (f.isDirectory()) {
                 size.put(namePerfix + fname + "/", f);
-                addFileToMap(size, namePerfix + fname + "/", f);
+                addFileToMap(size, excludeDirs, namePerfix + fname + "/", f);
             }
         }
     }
